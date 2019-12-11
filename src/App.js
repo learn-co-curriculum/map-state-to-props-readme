@@ -11,7 +11,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <button onClick={event => this.handleOnClick()}>Click me bitch</button>
+        <button onClick={event => this.handleOnClick()}>
+          Click me bitch wtf yes i do have changes
+        </button>
         <p>{this.props.items.length}</p>
       </div>
     );
