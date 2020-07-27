@@ -14,16 +14,16 @@ can use the __React Redux__ library to get React and Redux talking to one
 another. Run `npm install react-redux --save` to install it and add it to our
 `package.json`.
 
-The __React Redux__ library gives access to a component called the __Provider__.
+The __React Redux__ library gives us access to a component called the __Provider__.
 This component does two things for us. First, it will make the store available
-to any nested components that are configured using a second method provided by
-the __React Redux__ library, __connect()__ function. More on that later. The 
+to nested components, once they have been configured using a second method 
+provided by the __React Redux__ library, __connect()__. More on that later. The 
 second thing it does for us is to alert our __Redux__ app when there has been 
 a change in state, which will then re-render our __React__ app. 
 
-Let's give it a shot. The first step in getting it working is to wrap the 
-__Provider__ component around our `App` component. Let's add the following code 
-to our `src/index.js` file:
+Let's give it a shot. The first step in getting it working is to import __Provider__
+from __React Redux__ then wrap the __Provider__ component around our `App` component. 
+Let's add the following code to our `src/index.js` file:
 
 ```javascript
 // ./src/index.js
@@ -51,11 +51,11 @@ ReactDOM.render(
 
 We just did a few things here:
 
-* We imported `Provider` from React Redux
+* We imported `Provider` from __React Redux__
 * We used `Provider` to wrap our React application
 * Instead of passing our store instance directly into the __App__ component, we 
 are now passing it into `Provider` as a prop, which will make it available to 
-all of our other components (with some additional configuration).
+all of our other components (after some additional configuration).
 
 
 ### Step 2: Connecting The Container Component to Store
@@ -71,14 +71,13 @@ this with the __connect()__ function.
 
 Connecting a component to the store means that it will be able to get data from
 the store's internal state. It also means that it will be told to re-render and 
-get new data when that state changes. The __connect()__ function made available
-to us by React Redux will allow us to do this.
+get new data when that state changes. 
 
 Let's open up `./src/App.js` so we can get the __App__ componenet connected. First, 
 we need to import the __connect()__ function from __React Redux__: 
 
 ```javascript
-
+//./src/App.js
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux'; /* code change */
@@ -92,6 +91,7 @@ fact that the store is no longer being passed directly to __App__ from `index.js
 
 
 ```javascript
+...
 
 class App extends Component {
 
@@ -112,6 +112,8 @@ class App extends Component {
     );
   }
 };
+
+...
 ```
 
 Finally, let's create a new method, `mapStateToProps`, and use __connect__ to 
@@ -119,6 +121,7 @@ wire everything together:
 
 
 ```javascript
+...
 
 const mapStateToProps = (state) => {
   return { items: state.items };
@@ -133,8 +136,7 @@ component when specific changes to the state occur, and (b) to only provide the
 slice of the state that we need to our __App__ component. So we will need (1) a
 function that listens to every change in the store and then (2) filters out the
 changes relevant to a particular component to (3) provide to that component.
-That's exactly what's happening here. In the next paragraph, let's go through
-what is doing what.
+That's exactly what's happening here. Let's go through what is doing what.
 
 ```javascript
 export default connect(mapStateToProps)(App);
@@ -151,10 +153,11 @@ completes task 2.
 
 Next we have to say which component in our application we are providing this 
 data to: you can see that we write `connect(mapStateToProps)(App)` to specify 
-that we are connecting this state to the __App__ component. Finally
-this entire __connect()__ method returns a new component which looks like the
-__App__ component we wrote, but now it also receives the correct data. This is
-the component we wish to export. So at the bottom of the file, you see:
+that we are connecting this state to the __App__ component. In the end, the 
+__connect()__ method returns a new component which looks like the __App__ 
+component we wrote, but is connected up to receive the correct data. This new
+component is the component we wish to export. So at the bottom of the file, 
+you see:
 
 ```javascript
 const mapStateToProps = (state) => {
@@ -212,8 +215,7 @@ export default connect(mapStateToProps)(App);
 
 Ok, __mapStateToProps()__ and __connect()__ is very confusing; we'll be digging
 through it more in upcoming lessons.  But for now, let's boot up our application, 
-click the button, and see if we can finally get our application to render. Ok, it 
-works - our component now properly re-renders!
+click the button, and verify that we can finally get our application to re-render. 
 
 
 #### A Note on `dispatch`
