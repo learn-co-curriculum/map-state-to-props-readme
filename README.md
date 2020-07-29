@@ -11,13 +11,16 @@ The reason why the application did not re-render previously is because our
 __React__ and __Redux__ libraries could not properly communicate to each 
 other to specify that a change in the store's state occurred. Luckily, we
 can use the __React Redux__ library to get React and Redux talking to one
-another. Run `npm install react-redux --save` to install it and add it to our
-`package.json`.
+another. Normally, to install Redux into a React application, you need to
+install two packages, `redux` and `react-redux`, by running 
+`npm install redux && npm install react-redux`. These are already included in 
+this lesson's `package.json` file, so all you need to do is run 
+`npm install && npm start` to get started.
 
 The __React Redux__ library gives us access to a component called the __Provider__.
 This component does two things for us. First, it will make the store available
-to nested components, once they have been configured using a second method 
-provided by the __React Redux__ library, __connect()__. More on that later. The 
+to nested components once they have been configured using a second method 
+provided by the __React Redux__ library, __connect()__ -- more on that later. The 
 second thing it does for us is to alert our __Redux__ app when there has been 
 a change in state, which will then re-render our __React__ app. 
 
@@ -55,7 +58,7 @@ We just did a few things here:
 * We used `Provider` to wrap our React application
 * Instead of passing our store instance directly into the __App__ component, we 
 are now passing it into `Provider` as a prop, which will make it available to 
-all of our other components (after some additional configuration).
+other components (after some additional configuration).
 
 
 ### Step 2: Connecting The Container Component to Store
@@ -116,8 +119,8 @@ class App extends Component {
 ...
 ```
 
-Finally, let's create a new method, `mapStateToProps`, and use __connect__ to 
-wire everything together:
+Finally, let's create a new method, `mapStateToProps`, and modify our export 
+statement to use __connect__ to wire everything together:
 
 
 ```javascript
@@ -133,8 +136,8 @@ export default connect(mapStateToProps)(App);
 Holy cow those last few lines are confusing. Let's see if we can understand
 them. Remember, that we have two goals here: (a) to only re-render our __App__
 component when specific changes to the state occur, and (b) to only provide the
-slice of the state that we need to our __App__ component. So we will need (1) a
-function that listens to every change in the store and then (2) filters out the
+needed slice of the state to our __App__ component. So we will need (1) a
+function that listens to every change in the store and then (2) accesses the
 changes relevant to a particular component to (3) provide to that component.
 That's exactly what's happening here. Let's go through what is doing what.
 
@@ -142,7 +145,7 @@ That's exactly what's happening here. Let's go through what is doing what.
 export default connect(mapStateToProps)(App);
 ```
 
-The connect function is taking care of task 1, it is synced up to our store,
+The connect function is taking care of task 1; it is synced up to our store,
 listening to each change in the state that occurs. When a change occurs, it
 calls a function *that we write* called __mapStateToProps()__, and in
 __mapStateToProps()__ we specify exactly which slice of the state we want to
@@ -156,25 +159,12 @@ data to: you can see that we write `connect(mapStateToProps)(App)` to specify
 that we are connecting this state to the __App__ component. In the end, the 
 __connect()__ method returns a new component which looks like the __App__ 
 component we wrote, but is connected up to receive the correct data. This new
-component is the component we wish to export. So at the bottom of the file, 
-you see:
-
-```javascript
-const mapStateToProps = (state) => {
-  return { items: state.items };
-};
-
-export default connect(mapStateToProps)(App);
-```
+component is the component we wish to export. 
 
 **Note:** We didn't have to import anything to define a __mapStateToProps()__ 
 function! We wrote that function ourselves.
 
-Finally, in our __mapStateToProps()__ function we are saying that we are
-providing a new prop called items, so in our __App__ component, that is the prop
-we want to reference.
-
-Once we've made all the changes, the final code should look like this:
+Once we've made all the changes, our final code should look like this:
 
 ```javascript
 // ./src/App.js
