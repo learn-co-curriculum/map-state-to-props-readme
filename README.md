@@ -11,9 +11,7 @@ The reason why the application did not re-render previously is because our
 __React__ and __Redux__ libraries could not properly communicate to each 
 other to specify that a change in the store's state occurred. Luckily, we
 can use the __React Redux__ library to get React and Redux talking to one
-another. Normally, to install Redux into a React application, you need to
-install two packages, `redux` and `react-redux`, by running 
-`npm install redux && npm install react-redux`. These are already included in 
+another. The `redux` and `react-redux` packages are already included in 
 this lesson's `package.json` file, so all you need to do is run 
 `npm install && npm start` to get started.
 
