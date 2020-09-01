@@ -9,11 +9,10 @@ class App extends Component {
 	  }
 
 	render() {
-		const state = this.props.store.getState();
 		return (
 			<div className="App">
 				<button onClick={this.handleOnClick}>Click</button>
-				<p>{state.clicks}</p>
+				<p>{this.props.store.getState().clicks}</p>
 			</div>
 		);
 	}
