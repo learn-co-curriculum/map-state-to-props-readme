@@ -4,9 +4,9 @@ import './App.css';
 class App extends Component {
 	handleOnClick = () => {
 		this.props.store.dispatch({
-		  type: 'INCREASE_COUNT',
+			type: 'INCREASE_COUNT',
 		});
-	  }
+	}
 
 	render() {
 		return (
