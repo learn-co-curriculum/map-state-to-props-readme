@@ -7,13 +7,13 @@ changes in the state. In this lesson, we'll fix that.
 
 ## Use the Provider component from React Redux
 
-The reason why the application did not re-render previously is because our
-__React__ and __Redux__ libraries could not properly communicate to each 
-other to specify that a change in the store's state occurred. Luckily, we
-can use the __React Redux__ library to get React and Redux talking to one
-another. The `redux` and `react-redux` packages are already included in 
-this lesson's `package.json` file, so all you need to do is run 
-`npm install && npm start` to get started.
+The reason why the application did not re-render previously is because our __React__ 
+and __Redux__ libraries could not properly communicate to each other to specify 
+that a change in the store's state occurred. Luckily, we can use the 
+__React Redux__ library to get React and Redux talking to one another. The 
+`redux` and `react-redux` packages are already included in this lesson's 
+`package.json` file, so all you need to do is run `npm install && npm start` 
+to get started.
 
 The __React Redux__ library gives us access to a component called the __Provider__.
 This component does two things for us. First, it will make the store available
@@ -33,14 +33,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux'; /* code change */
-import shoppingListItemReducer from './reducers/shoppingListItemReducer';
+import counterReducer from './reducers/counterReducer.js';
 import App from './App';
 import './index.css';
 
 const store = createStore(
-  shoppingListItemReducer,
+  counterReducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
+); 
 
 ReactDOM.render(
   <Provider store={store}>
@@ -48,6 +48,7 @@ ReactDOM.render(
   </Provider>, /* code change */
   document.getElementById('root')
 );
+
 ```
 
 We just did a few things here:
@@ -96,23 +97,21 @@ fact that the store is no longer being passed directly to __App__ from `index.js
 
 class App extends Component {
 
-  handleOnClick() {
-    this.props.dispatch({ 
-      type: 'INCREASE_COUNT',
-    });
-  }
+	handleOnClick = () => {
+		this.props.dispatch({
+		  type: 'INCREASE_COUNT',
+		});
+	}
 
-  render() {
-    return (
-      <div className="App">
-        <button onClick={() => this.handleOnClick()}>
-          Click
-        </button>
-        <p>{this.props.items.length}</p> 
-      </div>
-    );
-  }
-};
+	render() {
+		return (
+			<div className="App">
+				<button onClick={this.handleOnClick}>Click</button>
+				<p>{this.props.clicks}</p> {/* code change */}
+			</div>
+		);
+	}
+}
 
 ...
 ```
@@ -125,14 +124,14 @@ statement to use __connect__ to wire everything together:
 ...
 
 const mapStateToProps = (state) => {
-  return { items: state.items };
+	return { clicks: state.clicks };
 };
-
+  
 export default connect(mapStateToProps)(App);
 ```
 
 Holy cow those last few lines are confusing. Let's see if we can understand
-them. Remember, that we have two goals here: (a) to only re-render our __App__
+them. Remember that we have two goals here: (a) to only re-render our __App__
 component when specific changes to the state occur, and (b) to only provide the
 needed slice of the state to our __App__ component. So we will need (1) a
 function that listens to every change in the store and then (2) accesses the
@@ -147,13 +146,13 @@ The connect function is taking care of task 1; it is synced up to our store,
 listening to each change in the state that occurs. When a change occurs, it
 calls a function *that we write* called __mapStateToProps()__, and in
 __mapStateToProps()__ we specify exactly which slice of the state we want to
-provide to our component. Here, we want to provide `state.items`, and allow our
-component to have access to them through a prop called items. We are then able 
-to access the items in our `render` method using `this.props.items`. So that 
-completes task 2. 
+provide to our component. Here, we want to provide `state.clicks`, and allow our
+component to have access to them through a prop called clicks. We are then able 
+to render the number of clicks in our `render` method using `this.props.clicks`. 
+So that completes task 2. 
 
 Next we have to say which component in our application we are providing this 
-data to: you can see that we write `connect(mapStateToProps)(App)` to specify 
+data to. You can see that we write `connect(mapStateToProps)(App)` to specify 
 that we are connecting this state to the __App__ component. In the end, the 
 __connect()__ method returns a new component which looks like the __App__ 
 component we wrote, but is connected up to receive the correct data. This new
@@ -168,36 +167,34 @@ Once we've made all the changes, our final code should look like this:
 // ./src/App.js
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux'; /* code change */
+import { connect } from 'react-redux'; 
+
 import './App.css';
 
 class App extends Component {
 
-  handleOnClick() {
-    this.props.dispatch({
-      type: 'INCREASE_COUNT',
-    });
-  }
+	handleOnClick = () => {
+		this.props.dispatch({
+		  type: 'INCREASE_COUNT',
+		});
+	}
 
-  render() {
-    return (
-      <div className="App">
-        <button onClick={() => this.handleOnClick()}>
-          Click
-        </button>
-        <p>{this.props.items.length}</p>
-      </div>
-    );
-  }
-};
+	render() {
+		return (
+			<div className="App">
+				<button onClick={this.handleOnClick}>Click</button>
+				<p>{this.props.clicks}</p>
+			</div>
+		);
+	}
+}
 
-// start of code change
 const mapStateToProps = (state) => {
-  return { items: state.items };
+	return { clicks: state.clicks };
 };
-
+  
 export default connect(mapStateToProps)(App);
-// end of code change
+
 ```
 
 
@@ -211,11 +208,11 @@ click the button, and verify that we can finally get our application to re-rende
 In the example code for App, you may have noticed something odd:
 
 ```js
-  handleOnClick() {
-    this.props.dispatch({
-      type: 'INCREASE_COUNT',
-    });
-  }
+handleOnClick = () => {
+  this.props.dispatch({
+    type: 'INCREASE_COUNT',
+  });
+}
 ```
 
 We have a prop named dispatch! But where did it come from if it's a prop? We 
@@ -236,15 +233,15 @@ you see lines like this:
 
 ```javascript
 const mapStateToProps = (state) => {
-  return { items: state.items };
+  return { clicks: state.clicks };
 };
 
 connect(mapStateToProps)(App);
 ```
 
-That is saying connect the data in __mapStateToProps()__ (the items portion of
+That is saying connect the data in __mapStateToProps()__ (the clicks portion of
 the state) to the __App__ component. And the __App__ component can access that
-state with `this.props.items`. 
+state with `this.props.clicks`. 
 
 Don't fret if you still feel hazy on __connect()__ and __mapStateToProps()__. 
 This is a new middleware api that takes time to learn. We won't introduce any 
